@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Finance | Enterprise Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-slate-200 min-h-screen font-sans">
+
+    <nav class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="bi bi-graph-up-arrow text-slate-900 font-bold"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-white">NEXUS <span
+                        class="text-emerald-400">ARCHITECT</span></h1>
+            </div>
+
+            <div class="flex gap-4 items-center">
+                <div class="text-right hidden md:block">
+                    <p id="nav-user-name" class="text-sm font-bold leading-none text-white"></p>
+                    <span id="nav-user-role"
+                        class="text-[10px] uppercase text-emerald-500 font-bold tracking-widest"></span>
+                </div>
+                <select id="userSelector"
+                    class="bg-slate-800 border border-slate-700 text-xs rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-emerald-500 text-slate-200"></select>
+                <button onclick="ui.showModal('modal-user')"
+                    class="bg-emerald-600 hover:bg-emerald-500 p-1.5 rounded-lg transition-all text-white">
+                    <i class="bi bi-person-plus-fill"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6">
+        <section id="view-user" class="view-section space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                    <p class="text-slate-500 text-xs font-bold uppercase mb-1">Balance (Resultado)</p>
+                    <h2 id="u-balance" class="text-3xl font-bold text-white font-mono">$0.00</h2>
+                    <span id="u-status" class="text-[10px] font-black uppercase px-2 py-0.5 rounded"></span>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                    <p class="text-slate-500 text-xs font-bold uppercase mb-1">Presupuesto (Gastos)</p>
+                    <div class="flex items-center justify-between">
+                        <h2 id="u-budget" class="text-3xl font-bold text-emerald-400 font-mono">$0.00</h2>
+                        <button onclick="ui.showModal('modal-budget')"
+                            class="text-slate-500 hover:text-white transition-colors">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </div>
+                    <p id="u-diff" class="text-[10px] font-mono mt-1"></p>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 overflow-hidden">
+                    <p class="text-slate-500 text-xs font-bold uppercase mb-2">Resumen Real</p>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex justify-between text-xs font-mono">
+                            <span class="text-emerald-500">Ingresos:</span>
+                            <span id="u-total-income">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-xs font-mono border-t border-slate-800 pt-1">
+                            <span class="text-red-500">Gastos:</span>
+                            <span id="u-total-expense">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 h-fit sticky top-24">
+                    <h3 id="form-title" class="font-bold mb-4 flex items-center gap-2">
+                        <i class="bi bi-plus-circle-fill text-emerald-500"></i> Nueva Transacción
+                    </h3>
+                    <form id="form-tx" class="space-y-3">
+                        <input type="hidden" id="tx-edit-id" value="">
+                        <input type="text" id="tx-desc" placeholder="Descripción" required
+                            class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 transition-all">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="tx-amount" placeholder="Monto" required
+                                class="bg-slate-950 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 transition-all font-mono">
+                            <select id="tx-type"
+                                class="bg-slate-950 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 transition-all">
+                                <option value="expense">Gasto</option>
+                                <option value="income">Ingreso</option>
+                            </select>
+                        </div>
+                        <select id="tx-category"
+                            class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 transition-all"></select>
+                        <input type="date" id="tx-date" required
+                            class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-emerald-500 transition-all">
+                        <div class="flex gap-2">
+                            <button type="submit" id="btn-submit"
+                                class="flex-1 bg-emerald-600 hover:bg-emerald-500 font-bold py-3 rounded-xl transition-all text-white">Registrar</button>
+                            <button type="button" id="btn-cancel-edit" onclick="ui.resetForm()"
+                                class="hidden bg-slate-800 hover:bg-slate-700 px-4 rounded-xl transition-all text-white">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                    <div class="p-4 border-b border-slate-800 bg-slate-900/50">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold">Libro de Movimientos</h3>
+                            <button onclick="ui.resetFilters()"
+                                class="text-slate-500 hover:text-emerald-500 text-xs transition-colors"><i
+                                    class="bi bi-arrow-clockwise"></i> Limpiar Filtros</button>
+                        </div>
+                        <div class="flex gap-2 flex-wrap">
+                            <input type="text" id="tx-filter" placeholder="Buscar concepto o categoría..."
+                                class="flex-1 min-w-[150px] bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 transition-all">
+                            <input type="date" id="tx-filter-from"
+                                class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 transition-all">
+                            <input type="date" id="tx-filter-to"
+                                class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 transition-all">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-800/50 text-slate-400 sticky top-0 backdrop-blur-md">
+                                <tr>
+                                    <th class="p-4 font-medium">Fecha</th>
+                                    <th class="p-4 font-medium">Categoría</th>
+                                    <th class="p-4 font-medium">Concepto</th>
+                                    <th class="p-4 font-medium">Monto</th>
+                                    <th class="p-4 text-center">Gestión</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-tx" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-admin" class="view-section space-y-6">
+            <h2 class="text-2xl font-bold text-white">Consola Administrativa</h2>
+            <div id="admin-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+    </main>
+
+    <div id="modal-user"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-xl font-bold mb-4 text-white">Nuevo Perfil Nexus</h3>
+            <div class="space-y-3">
+                <input type="text" id="new-u-name" placeholder="Nombre completo"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 outline-none focus:border-emerald-500">
+                <select id="new-u-role"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 outline-none focus:border-emerald-500">
+                    <option value="user">Usuario</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button onclick="app.registerUser()"
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold text-white shadow-lg transition-all">Crear
+                    Perfil</button>
+                <button onclick="ui.hideModal('modal-user')"
+                    class="w-full text-slate-500 text-sm hover:text-slate-300">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-budget"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl">
+            <h3 class="text-xl font-bold mb-4 text-white">Límite de Presupuesto</h3>
+            <input type="number" id="input-budget"
+                class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 outline-none focus:border-emerald-500 mb-4 font-mono">
+            <div class="flex gap-2">
+                <button onclick="app.updateBudget()"
+                    class="flex-1 bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold text-white transition-all">Actualizar</button>
+                <button onclick="ui.hideModal('modal-budget')"
+                    class="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-xl text-white">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
